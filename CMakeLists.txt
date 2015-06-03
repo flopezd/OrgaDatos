@@ -16,11 +16,12 @@ file(COPY ${RESOURCES} DESTINATION ${PROJECT_SOURCE_DIR}/bin)
 
 # Sources
 set(SOURCE_FILES
+    src/Tokenizer.h
     src/Common.h
     src/main.cpp
     )
 
-add_executable(OrgaDatos ${SOURCE_FILES}  )
+add_executable(OrgaDatos ${SOURCE_FILES}  src/Tokenizer.cpp src/Tokenizer.h)
 
 # Bibliotecas
 target_link_libraries(OrgaDatos)
