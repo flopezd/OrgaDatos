@@ -19,8 +19,9 @@ struct TLineaDato {
     int valor;
 };
 
-struct TOracion {
-    vector<string> palabras;
+struct TLineaTest {
+    vector<vector<string>> oraciones;
+    int id;
 };
 
 struct TDatosRelacion {

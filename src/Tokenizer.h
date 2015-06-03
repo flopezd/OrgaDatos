@@ -5,10 +5,10 @@
 class Tokenizer {
 public:
     // Toma una linea de datos y la separa por palabras, guardando tambien su valor.
-    static TLineaDato tokenizeDato(char *buffer);
+    static TLineaDato tokenizeDato(string buffer);
 
     // Toma una linea de texto y la separa por palabras.
-    static vector<TOracion> tokenizeTest(char *buffer);
+    static TLineaTest tokenizeTest(string buffer);
 };
 
 
