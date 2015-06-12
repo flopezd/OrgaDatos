@@ -14,7 +14,7 @@ public:
     static TRelacion procesarDatosRelacion(string palabra1,string palabra2,TInfo *info);
     static TBloque procesarDatosBloque(vector<TRelacion> bloque);
     static void ajustarW(vector<TBloque> review, TInfo *info,double valorEsperado);
-    static double resolverReview(vector<TBloque> vector, TInfo *info);
+    static double resolverReview(vector<TBloque> review, TInfo *info);
 };
 
 
