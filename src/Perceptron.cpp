@@ -119,7 +119,7 @@ void ordenarReview(vector<TBloque> *review, int low, int high) {
 
 double *generarVector(vector<TBloque> review) {
     double *vector = new double[tamVectorPerceptron];
-    ordenarReview(&review,0,review.size());
+    ordenarReview(&review,0,review.size()-1);
     while(review.size()>cantBloquesMax) {
         review.pop_back();
     }

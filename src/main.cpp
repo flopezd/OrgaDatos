@@ -101,6 +101,7 @@ void resolver(TInfo *info, string datosATestear) {
     TLineaDato lineaDato;
     string line;
     double resultado;
+    int l= 0;
 
     // Se abre el archivo
     ifstream datos(datosATestear);
@@ -111,7 +112,7 @@ void resolver(TInfo *info, string datosATestear) {
         // Se lee linea a linea, cada linea se separa en palabras cada una se guarda en el
         // hash de palabras y cada combinacion de par de palabras en el hash de relaciones
         //for each line
-        while (datos.good()) {
+        while (datos.good() && l< 2000) {
             getline(datos, buffer);
 
             if (buffer != "") {
@@ -141,6 +142,7 @@ void resolver(TInfo *info, string datosATestear) {
                     savefile << "0" << endl;
                 }
             }
+            l = l+1;
         }
         datos.close();
         savefile.close();
