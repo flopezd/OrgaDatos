@@ -7,30 +7,38 @@
 
 #include <string>
 #include <vector>
-using namespace std;
+#include <string.h>
+#include "HashRelaciones.h"
+#include "HashPalabras.h"
 
-struct TInfo {
-    HashPalabras palabras;
-    HashRelaciones relaciones;
-};
+using namespace std;
+static const int cantBloquesMax = 10;
+static const int cantRelacionesMax = 1000;
+static const int tamVectorPerceptron = cantBloquesMax*(1+cantRelacionesMax);
+
 
 struct TLineaDato {
-    vector<string> palabras;
+    vector<vector<string>> bloques;
     int valor;
+    string id;
 };
 
-struct TLineaTest {
-    vector<vector<string>> oraciones;
-    int id;
+struct TRelacion {
+    double probabilidad,valorRelacion,probPositivo;
 };
 
-struct TDatosRelacion {
-    int cantRelaciones,valorRelacion;;
-};
+struct TBloque {
+    double probabilidad;
+    vector<TRelacion> relaciones;
 
-struct TDatosArista {
-    int cantPalabrasI,cantPalabrasJ;
-    TDatosRelacion datosRelacion;
+    TBloque(){
+        while (relaciones.size()<cantRelacionesMax/2) {
+            TRelacion relacion;
+            relacion.probabilidad = 0;
+            relacion.valorRelacion = 0;
+            relaciones.push_back(relacion);
+        }
+    }
 };
 
 #endif //_ORGADATOS_COMMON_H_
