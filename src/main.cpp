@@ -85,10 +85,16 @@ void aprender2(string archivoParaAprender, TInfo *info) {
                             }
                         }
                     }
+                    bloque = Perceptron::procesarDatosBloque(bloque.relaciones);
+                    review.push_back(bloque);
                 }
                 Perceptron::ajustarW(review, info, linea.valor);
             }
+            if(l==1999) {
+                int a =2;
+            }
             l = l+1;
+            cout<<l<<endl;
         }
         datos.close();
     }
@@ -124,10 +130,12 @@ void resolver(TInfo *info, string datosATestear) {
                 for (int z = 0; z < lineaDato.bloques.size(); z++) {
                     TBloque bloque;
                     for (int i = 0; i < lineaDato.bloques[z].size(); i++) {
-                        for (int j = i + 1; j < lineaDato.bloques[z].size(); j++) {
-                            bloque.relaciones.push_back(Perceptron::procesarDatosRelacion(lineaDato.bloques[z].at(i),
-                                                                                          lineaDato.bloques[z].at(j),
-                                                                                          info));
+                        if (lineaDato.bloques[z].at(i) != "") {
+                            for (int j = i + 1; j < lineaDato.bloques[z].size(); j++) {
+                                bloque.relaciones.push_back(Perceptron::procesarDatosRelacion(lineaDato.bloques[z].at(i),
+                                                                                              lineaDato.bloques[z].at(j),
+                                                                                              info));
+                            }
                         }
                     }
                     bloque = Perceptron::procesarDatosBloque(bloque.relaciones);
@@ -206,7 +214,7 @@ int main(int argc, char **argv) {
     TInfo *info = aprender(TRAIN_DATA);
     cout<<"pasoaca1"<<endl;
     for (int i = 0; i < tamVectorPerceptron; i++) {
-        info->wPerceptron[i] = 0;
+        info->wPerceptron.push_back(0);
     }
     aprender2(TRAIN_DATA, info);
     cout<<"pasoaca2"<<endl;

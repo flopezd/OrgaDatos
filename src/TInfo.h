@@ -12,7 +12,7 @@ public:
     HashPalabras palabras;
     HashRelaciones relaciones;
     //cantBloquesMax*(1+cantRelacionesMax)
-    double wPerceptron[10010];
+    vector<double> wPerceptron;
 };
 
 

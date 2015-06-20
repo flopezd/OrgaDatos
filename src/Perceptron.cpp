@@ -51,7 +51,7 @@ void ordenarBloque(vector<TRelacion> *bloque, int low, int high) {
         ordenarBloque(bloque, p +1, high);
     }
 }
-
+/*
 TBloque Perceptron::procesarDatosBloque(vector<TRelacion> bloque) {
     TBloque bloqueAux;
     double probTotal = 0;
@@ -71,9 +71,30 @@ TBloque Perceptron::procesarDatosBloque(vector<TRelacion> bloque) {
     bloqueAux.probabilidad = probTotal / bloque.size();
     bloqueAux.relaciones = bloque;
     return bloqueAux;
+}*/
+
+TBloque Perceptron::procesarDatosBloque(vector<TRelacion> bloque) {
+    TBloque bloqueAux;
+    double probTotal = 0;
+    ordenarBloque(&bloque,0,bloque.size()-1);
+    while(bloque.size()>cantRelacionesMax+1) {
+        bloque.pop_back();
+    }
+    while(bloque.size()<cantRelacionesMax+1) {
+        TRelacion relacion;
+        relacion.probabilidad = 0;
+        relacion.valorRelacion = 0;
+        bloque.push_back(relacion);
+    }
+    for (int i = 0; i < bloque.size(); i++) {
+        probTotal = probTotal + bloque[i].probabilidad;
+    }
+    bloqueAux.probabilidad = probTotal / bloque.size();
+    bloqueAux.relaciones = bloque;
+    return bloqueAux;
 }
 
-double productoWX(double *valores, double *pesos) {
+double productoWX(vector<double> valores, vector<double> pesos) {
     double resultado = 0;
     for (int i = 0; i < tamVectorPerceptron; i++) {
         resultado = resultado + valores[i]*pesos[i];
@@ -116,7 +137,7 @@ void ordenarReview(vector<TBloque> *review, int low, int high) {
         ordenarReview(review, p +1, high);
     }
 }
-
+/*
 double *generarVector(vector<TBloque> review) {
     double *vector = new double[tamVectorPerceptron];
     ordenarReview(&review,0,review.size()-1);
@@ -136,25 +157,47 @@ double *generarVector(vector<TBloque> review) {
     }
 
     return vector;
+}*/
+
+vector<double> generarVector(vector<TBloque> review) {
+    vector<double> vector;
+    ordenarReview(&review,0,review.size()-1);
+    /*while(review.size()>cantBloquesMax) {
+        review.pop_back();
+    }*/
+    while(review.size()<cantBloquesMax) {
+        TBloque bloque = TBloque();
+        review.push_back(bloque);
+    }
+    for (int i = 0; i < cantBloquesMax; i++) {
+        for (int j = 0; j < cantRelacionesMax+1; j++) {
+            vector.push_back(review[i].relaciones[j].valorRelacion);
+        }
+    }
+
+    return vector;
 }
 
 void Perceptron::ajustarW(vector<TBloque> review, TInfo *info,double valorEsperado) {
-    double *entrada = generarVector(review);
+    vector<double> entrada = generarVector(review);
     double learningRate = 0.1;
 
     double resultadoEsperado = valorEsperado;
     if (valorEsperado == 0) resultadoEsperado=-1;
     double resultado = productoWX(entrada,info->wPerceptron);
-    double error = resultadoEsperado - resultado;
-    for (int i = 0; i < tamVectorPerceptron; i++) {
-        info->wPerceptron[i] = info->wPerceptron[i]+ learningRate * error * entrada[i];
-
+    if ((resultadoEsperado <0 && resultado>=0) ||(resultadoEsperado >0 && resultado<=0)) {
+        double error = resultadoEsperado - resultado;
+        for (int i = 0; i < tamVectorPerceptron; i++) {
+            info->wPerceptron.at(i) = info->wPerceptron.at(i)+ learningRate * error * entrada.at(i);
+            if (i == 73) {
+                int a =5;
+            }
+        }
     }
 }
 
 double Perceptron::resolverReview(vector<TBloque> review, TInfo *info) {
-    double *entrada = generarVector(review);
+    vector<double> entrada = generarVector(review);
     double resultado = productoWX(entrada,info->wPerceptron);
-    delete(entrada);
-    return 0 ;
+    return resultado;
 }
