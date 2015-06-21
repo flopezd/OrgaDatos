@@ -7,11 +7,15 @@ using namespace std;
 
 
 void HashPalabras::agregar(string palabra) {
-    if (palabra != ""){
-        if (hash.count(palabra) > 0)
-            hash.at(palabra) += 1;
-        else
-            hash.insert({palabra, 1});
+    if (hash.count(palabra) > 0)
+        hash.at(palabra) += 1;
+    else
+        hash.insert({palabra, 1});
+    if (palabra == "to") {
+        a = a+1;
+        if (hash.at(palabra) != a) {
+            int s =5;
+        }
     }
 }
 

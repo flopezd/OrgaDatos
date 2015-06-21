@@ -15,6 +15,7 @@ class HashPalabras {
 private:
     unordered_map <string,long int> hash;
 public:
+    int a = 0;
     void agregar(string palabra);
     int getCantidad(string palabra);
 };

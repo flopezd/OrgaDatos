@@ -20,12 +20,12 @@ private:
 
         bool operator==(const ParPalabras& b) const
         {
-            string aux1=this->pal1+this->pal2;
-            string aux2=b.pal1+b.pal2;
-            string aux3=this->pal2+this->pal1;
-            string aux4=b.pal2+b.pal1;
+            int comp1 = pal1.compare(b.pal1);
+            comp1 = comp1 + pal2.compare(b.pal2);
+            int comp2 = pal1.compare(b.pal2);
+            comp2 = comp2 + pal2.compare(b.pal1);
 
-            return ( !strcmp(aux1.c_str(),aux2.c_str()) || !strcmp(aux3.c_str(),aux4.c_str())  );
+            return ( comp1 == 0 || comp2 == 0  );
         }
     };
 
@@ -49,7 +49,12 @@ private:
     struct KeyHasher {
         std::size_t operator()(const ParPalabras &par) const {
             size_t h = 0;
-            string aux = par.pal1 + par.pal2;
+            string aux;
+            if (par.pal1.compare(par.pal2)<0) {
+                aux = par.pal1 + par.pal2;
+            } else {
+                aux = par.pal2 + par.pal1;
+            }
             size_t len = aux.length();
             for (size_t i = 0; i < len; ++i) {
                 h += aux[i];
@@ -65,6 +70,7 @@ private:
     unordered_map<ParPalabras, Calificacion, KeyHasher> hash;
 
 public:
+    int a = 0;
     void agregar(string palabra1, string palabra2, int valor);
 
     TDatosRelacion getDatos(string palabra1, string palabra2);

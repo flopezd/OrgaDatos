@@ -14,8 +14,8 @@ static const string TEST_DATA = "resources/testData.tsv";
 
 // Procesa la informacion del archivo pasado por parametros y la
 // devuelve ya procesada.
-TInfo *aprender(string archivoParaAprender) {
-    TInfo *info = new TInfo();
+TInfo aprender(string archivoParaAprender) {
+    TInfo info = TInfo();
     string buffer;
     TLineaDato linea;
     string line;
@@ -28,18 +28,17 @@ TInfo *aprender(string archivoParaAprender) {
         // Se lee linea a linea, cada linea se separa en bloques y cada bloque en palabras
         // cada una se guarda en el hash de palabras y cada combinacion de par de palabras
         // en el hash de relaciones
-        while (datos.good() && l< 2000) {
+        while (datos.good() && l< 10) {
             getline(datos, buffer);
             if (buffer != "") {
                 linea = Tokenizer::tokenizeDato(buffer);
                 for (int z = 0; z < linea.bloques.size(); z++) {
                     for (int i = 0; i < linea.bloques[z].size(); i++) {
                         if (linea.bloques[z].at(i) != "") {
-                            info->palabras.agregar(linea.bloques[z].at(i));
+                            info.palabras.agregar(linea.bloques[z].at(i));
                             for (int j = i + 1; j < linea.bloques[z].size(); j++) {
-                                info->relaciones.agregar(linea.bloques[z].at(i), linea.bloques[z].at(j), linea.valor);
+                                info.relaciones.agregar(linea.bloques[z].at(i), linea.bloques[z].at(j), linea.valor);
                             }
-
                         }
                     }
                 }
@@ -66,7 +65,7 @@ void aprender2(string archivoParaAprender, TInfo *info) {
         // Se lee linea a linea, cada linea se separa en palabras cada una se guarda en el
         // hash de palabras y cada combinacion de par de palabras en el hash de relaciones
         //for each line
-        while (datos.good() && l< 2000) {
+        while (datos.good() && l< 10) {
             getline(datos, buffer);
             if (buffer != "") {
                 // Se separa en bloques y las bloques en palabras.
@@ -81,7 +80,7 @@ void aprender2(string archivoParaAprender, TInfo *info) {
                                 bloque.relaciones.push_back(
                                         Perceptron::procesarDatosRelacion(linea.bloques[z].at(i),
                                                                           linea.bloques[z].at(j),
-                                                                          info));
+                                                                          *info));
                             }
                         }
                     }
@@ -134,7 +133,7 @@ void resolver(TInfo *info, string datosATestear) {
                             for (int j = i + 1; j < lineaDato.bloques[z].size(); j++) {
                                 bloque.relaciones.push_back(Perceptron::procesarDatosRelacion(lineaDato.bloques[z].at(i),
                                                                                               lineaDato.bloques[z].at(j),
-                                                                                              info));
+                                                                                              *info));
                             }
                         }
                     }
@@ -211,14 +210,10 @@ void resolver2(TInfo *info, string datosATestear) {
 }
 
 int main(int argc, char **argv) {
-    TInfo *info = aprender(TRAIN_DATA);
+    TInfo info = aprender(TRAIN_DATA);
     cout<<"pasoaca1"<<endl;
-    for (int i = 0; i < tamVectorPerceptron; i++) {
-        info->wPerceptron.push_back(0);
-    }
-    aprender2(TRAIN_DATA, info);
-    cout<<"pasoaca2"<<endl;
-    resolver(info, TEST_DATA);
+    aprender2(TRAIN_DATA, &info);
+    cout<<"pasoaca2"<<endl;/*
+    resolver(info, TEST_DATA);*/
     //resolver2(info, TEST_DATA);
-    delete(info);
 }

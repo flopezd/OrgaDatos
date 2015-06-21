@@ -2,16 +2,19 @@
 #include "TInfo.h"
 #include "Perceptron.h"
 
-TRelacion Perceptron::procesarDatosRelacion(string palabra1,string palabra2,TInfo *info) {
-    TDatosRelacion datosRelacion = info->relaciones.getDatos(palabra1,palabra2);
-    double cantPal1 = info->palabras.getCantidad(palabra1);
-    double cantPal2 = info->palabras.getCantidad(palabra2);
+TRelacion Perceptron::procesarDatosRelacion(string palabra1,string palabra2,TInfo info) {
+    TDatosRelacion datosRelacion = info.relaciones.getDatos(palabra1,palabra2);
+    double cantPal1 = info.palabras.getCantidad(palabra1);
+    double cantPal2 = info.palabras.getCantidad(palabra2);
     TRelacion relacion;
     relacion.probabilidad = 0;
     relacion.valorRelacion = 0;
     if (datosRelacion.cantRelaciones > 0) {
         relacion.probabilidad = (double)(2*datosRelacion.cantRelaciones)/(cantPal1+cantPal2);
         relacion.valorRelacion = datosRelacion.valorRelacion;
+    }
+    if (relacion.probabilidad>1 || relacion.valorRelacion>1){
+        int a =2;
     }
     return relacion;
 }
@@ -87,6 +90,9 @@ TBloque Perceptron::procesarDatosBloque(vector<TRelacion> bloque) {
         bloque.push_back(relacion);
     }
     for (int i = 0; i < bloque.size(); i++) {
+        if (bloque[i].probabilidad>1 || bloque[i].valorRelacion>1){
+            int a =2;
+        }
         probTotal = probTotal + bloque[i].probabilidad;
     }
     bloqueAux.probabilidad = probTotal / bloque.size();
@@ -185,7 +191,7 @@ void Perceptron::ajustarW(vector<TBloque> review, TInfo *info,double valorEspera
     double resultadoEsperado = valorEsperado;
     if (valorEsperado == 0) resultadoEsperado=-1;
     double resultado = productoWX(entrada,info->wPerceptron);
-    if ((resultadoEsperado <0 && resultado>=0) ||(resultadoEsperado >0 && resultado<=0)) {
+    //if ((resultadoEsperado <0 && resultado>=0) ||(resultadoEsperado >0 && resultado<=0)) {
         double error = resultadoEsperado - resultado;
         for (int i = 0; i < tamVectorPerceptron; i++) {
             info->wPerceptron.at(i) = info->wPerceptron.at(i)+ learningRate * error * entrada.at(i);
@@ -193,7 +199,7 @@ void Perceptron::ajustarW(vector<TBloque> review, TInfo *info,double valorEspera
                 int a =5;
             }
         }
-    }
+    //}
 }
 
 double Perceptron::resolverReview(vector<TBloque> review, TInfo *info) {

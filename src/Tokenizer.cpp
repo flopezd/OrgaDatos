@@ -19,7 +19,7 @@ TLineaDato Tokenizer::tokenizeDato(string linea) {
     strtk::parse(IDValorReview[2],delimiters2,bloques);
 
     // Parsea los bloques en palabras
-    static const std::string delimiters3 = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~";
+    static const std::string delimiters3 = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
     for(int i = 0; i < bloques.size();i++) {
         vector<string> bloque;
         strtk::parse(bloques[i],delimiters3,bloque);
@@ -44,7 +44,7 @@ TLineaDato Tokenizer::tokenizeDatoTest(string linea) {
     strtk::parse(IDValorReview[1],delimiters2,bloques);
 
     // Parsea los bloques en palabras
-    static const std::string delimiters3 = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~";
+    static const std::string delimiters3 = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
     for(int i = 0; i < bloques.size();i++) {
         vector<string> bloque;
         strtk::parse(bloques[i],delimiters3,bloque);

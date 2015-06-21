@@ -9,6 +9,7 @@
 
 class TInfo {
 public:
+    TInfo();
     HashPalabras palabras;
     HashRelaciones relaciones;
     //cantBloquesMax*(1+cantRelacionesMax)
