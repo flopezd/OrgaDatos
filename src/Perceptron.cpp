@@ -77,10 +77,10 @@ TBloque Perceptron::procesarDatosBloque(vector<TRelacion> bloque) {
     TBloque bloqueAux;
     double probTotal = 0;
     ordenarBloque(&bloque,0,bloque.size()-1);
-    while(bloque.size()>cantRelacionesMax+1) {
+    while(bloque.size()>cantRelacionesMax) {
         bloque.pop_back();
     }
-    while(bloque.size()<cantRelacionesMax+1) {
+    while(bloque.size()<cantRelacionesMax) {
         TRelacion relacion;
         relacion.probabilidad = 0;
         relacion.valorRelacion = 0;
@@ -165,15 +165,12 @@ double *generarVector(vector<TBloque> review) {
 vector<double> generarVector(vector<TBloque> review) {
     vector<double> vector;
     ordenarReview(&review,0,review.size()-1);
-    /*while(review.size()>cantBloquesMax) {
-        review.pop_back();
-    }*/
     while(review.size()<cantBloquesMax) {
         TBloque bloque = TBloque();
         review.push_back(bloque);
     }
     for (int i = 0; i < cantBloquesMax; i++) {
-        for (int j = 0; j < cantRelacionesMax+1; j++) {
+        for (int j = 0; j < cantRelacionesMax; j++) {
             vector.push_back(review[i].relaciones[j].valorRelacion);
         }
     }
@@ -181,26 +178,35 @@ vector<double> generarVector(vector<TBloque> review) {
     return vector;
 }
 
-void Perceptron::ajustarW(vector<TBloque> review, TInfo *info,double valorEsperado) {
+vector<double> Perceptron::ajustarW(vector<TBloque> review, vector<double> wPerceptron,double valorEsperado) {
     vector<double> entrada = generarVector(review);
-    double learningRate = 0.1;
+    double learningRate = 0.05;
 
     double resultadoEsperado = valorEsperado;
     if (valorEsperado == 0) resultadoEsperado=-1;
-    double resultado = productoWX(entrada,info->wPerceptron);
+    double resultado = productoWX(entrada,wPerceptron);
     //if ((resultadoEsperado <0 && resultado>=0) ||(resultadoEsperado >0 && resultado<=0)) {
         double error = resultadoEsperado - resultado;
+        double modEntradaCuad = 0;
         for (int i = 0; i < tamVectorPerceptron; i++) {
-            info->wPerceptron.at(i) = info->wPerceptron.at(i)+ learningRate * error * entrada.at(i);
+            double xi = entrada.at(i);
+            if(xi<1E-150) xi =0;
+            modEntradaCuad = modEntradaCuad +( xi*xi);
+        }
+        if (modEntradaCuad == 0) modEntradaCuad=1;
+        for (int i = 0; i < tamVectorPerceptron; i++) {
+            double xi = entrada.at(i);
+            if(xi<1E-150) xi =0;
+            wPerceptron.at(i) = wPerceptron.at(i)+ learningRate * error * xi/modEntradaCuad;
             if (i == 73) {
                 int a =5;
             }
         }
     //}
+    return wPerceptron;
 }
 
-double Perceptron::resolverReview(vector<TBloque> review, TInfo *info) {
+double Perceptron::resolverReview(vector<TBloque> review, vector<double> wPerceptron) {
     vector<double> entrada = generarVector(review);
-    double resultado = productoWX(entrada,info->wPerceptron);
-    return resultado;
+    return productoWX(entrada,wPerceptron);
 }

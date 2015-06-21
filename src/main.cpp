@@ -32,7 +32,7 @@ TInfo aprender(string archivoParaAprender) {
         // Se lee linea a linea, cada linea se separa en bloques y cada bloque en palabras
         // cada una se guarda en el hash de palabras y cada combinacion de par de palabras
         // en el hash de relaciones
-        while (datos.good() && l < 100) {
+        while (datos.good() && l < 2000) {
             getline(datos, buffer);
             if (buffer != "") {
                 linea = Tokenizer::tokenizeDato(buffer);
@@ -54,7 +54,7 @@ TInfo aprender(string archivoParaAprender) {
 }
 
 // Con la info procesada va aprendiendo para el perceptron
-void aprender2(string archivoParaAprender, TInfo *info) {
+TInfo aprender2(string archivoParaAprender, TInfo info) {
     string buffer;
     TLineaDato linea;
     string line;
@@ -67,7 +67,7 @@ void aprender2(string archivoParaAprender, TInfo *info) {
         // Se lee linea a linea, cada linea se separa en palabras cada una se guarda en el
         // hash de palabras y cada combinacion de par de palabras en el hash de relaciones
         //for each line
-        while (datos.good() && l < 10) {
+        while (datos.good() && l < 2000) {
             getline(datos, buffer);
             if (buffer != "") {
                 // Se separa en bloques y las bloques en palabras.
@@ -78,22 +78,26 @@ void aprender2(string archivoParaAprender, TInfo *info) {
                     TBloque bloque;
                     for (int i = 0; i < linea.bloques[z].size(); i++) {
                         string palabra1 = linea.bloques[z].at(i);
-                        if (linea.bloques[z].at(i) != "") {
-                            for (int j = i + 1; j < linea.bloques[z].size(); j++) {
-                                string palabra2 = linea.bloques[z].at(j);
-                                bloque.relaciones.push_back(
-                                        Perceptron::procesarDatosRelacion(info->relaciones.getDatos(palabra1, palabra2),
-                                                              info->palabras.getCantidad(palabra1),
-                                                              info->palabras.getCantidad(palabra2)));
-                            }
+                        for (int j = i + 1; j < linea.bloques[z].size(); j++) {
+                            string palabra2 = linea.bloques[z].at(j);
+                            bloque.relaciones.push_back(
+                                    Perceptron::procesarDatosRelacion(info.relaciones.getDatos(palabra1, palabra2),
+                                                                      info.palabras.getCantidad(palabra1),
+                                                                      info.palabras.getCantidad(palabra2)));
                         }
                     }
                     bloque = Perceptron::procesarDatosBloque(bloque.relaciones);
                     review.push_back(bloque);
                 }
-                Perceptron::ajustarW(review, info, linea.valor);
+                info.wPerceptron = Perceptron::ajustarW(review, info.wPerceptron, linea.valor);
             }
-            if (l == 1999) {
+            if (l == 500) {
+                int a = 2;
+            }
+            if (l == 1000) {
+                int a = 2;
+            }
+            if (l == 1500) {
                 int a = 2;
             }
             l = l + 1;
@@ -101,11 +105,12 @@ void aprender2(string archivoParaAprender, TInfo *info) {
         }
         datos.close();
     }
+    return info;
 }
 
 
 // Con la info pasada por parametro analiza los datos a testear.
-void resolver(TInfo *info, string datosATestear) {
+void resolver(TInfo info, string datosATestear) {
     string buffer;
     TLineaDato lineaDato;
     string line;
@@ -138,16 +143,16 @@ void resolver(TInfo *info, string datosATestear) {
                             for (int j = i + 1; j < lineaDato.bloques[z].size(); j++) {
                                 string palabra2 = lineaDato.bloques[z].at(j);
                                 bloque.relaciones.push_back(
-                                        Perceptron::procesarDatosRelacion(info->relaciones.getDatos(palabra1, palabra2),
-                                                                          info->palabras.getCantidad(palabra1),
-                                                                          info->palabras.getCantidad(palabra2)));
+                                        Perceptron::procesarDatosRelacion(info.relaciones.getDatos(palabra1, palabra2),
+                                                                          info.palabras.getCantidad(palabra1),
+                                                                          info.palabras.getCantidad(palabra2)));
                             }
                         }
                     }
                     bloque = Perceptron::procesarDatosBloque(bloque.relaciones);
                     review.push_back(bloque);
                 }
-                resultado = Perceptron::resolverReview(review, info);
+                resultado = Perceptron::resolverReview(review, info.wPerceptron);
                 savefile << lineaDato.id << ",";
                 // Si el resultado final es positivo la review se considera positiva, en caso contrario se toma como negativa
                 if (resultado > 0) {
@@ -219,8 +224,8 @@ void resolver2(TInfo *info, string datosATestear) {
 int main(int argc, char **argv) {
     TInfo info = aprender(TRAIN_DATA);
     cout << "pasoaca1" << endl;
-    aprender2(TRAIN_DATA, &info);
-    cout << "pasoaca2" << endl;/*
-    resolver(info, TEST_DATA);*/
+    info = aprender2(TRAIN_DATA, info);
+    cout << "pasoaca2" << endl;
+    resolver(info, TEST_DATA);
     //resolver2(info, TEST_DATA);
 }

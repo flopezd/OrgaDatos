@@ -13,8 +13,8 @@ class Perceptron {
 public:
     static TRelacion procesarDatosRelacion(TDatosRelacion datosRelacion,double cantPal1,double cantPal2);
     static TBloque procesarDatosBloque(vector<TRelacion> bloque);
-    static void ajustarW(vector<TBloque> review, TInfo *info,double valorEsperado);
-    static double resolverReview(vector<TBloque> review, TInfo *info);
+    static vector<double> ajustarW(vector<TBloque> review, vector<double> wPerceptron,double valorEsperado);
+    static double resolverReview(vector<TBloque> review, vector<double> wPerceptron);
 };
 
 
