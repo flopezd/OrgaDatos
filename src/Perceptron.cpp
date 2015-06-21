@@ -2,10 +2,7 @@
 #include "TInfo.h"
 #include "Perceptron.h"
 
-TRelacion Perceptron::procesarDatosRelacion(string palabra1,string palabra2,TInfo info) {
-    TDatosRelacion datosRelacion = info.relaciones.getDatos(palabra1,palabra2);
-    double cantPal1 = info.palabras.getCantidad(palabra1);
-    double cantPal2 = info.palabras.getCantidad(palabra2);
+TRelacion Perceptron::procesarDatosRelacion(TDatosRelacion datosRelacion,double cantPal1,double cantPal2) {
     TRelacion relacion;
     relacion.probabilidad = 0;
     relacion.valorRelacion = 0;

@@ -23,19 +23,6 @@ void HashRelaciones::agregar(string palabra1, string palabra2, int valor) {
             hash.at(par).positiva += 1;
         }
     }
-
-    if ((palabra1 == "to" && palabra2 == "the") || (palabra2 == "to" && palabra1 == "the")) {
-        a = a+1;
-        if (hash.at(par).cantRel() != a) {
-            int s =5;
-        }
-    }/*
-    if ((palabra2 == "to" && palabra1 == "the")) {
-        int a = 5;
-    }
-    if ((palabra1 == "to" && palabra2 == "the")) {
-        int a = 5;
-    }*/
 }
 
 TDatosRelacion HashRelaciones::getDatos(string palabra1, string palabra2) {

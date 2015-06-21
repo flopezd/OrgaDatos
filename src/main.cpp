@@ -19,7 +19,11 @@ TInfo aprender(string archivoParaAprender) {
     string buffer;
     TLineaDato linea;
     string line;
-    int l= 0;
+    int l = 0;
+
+    int p1 = 0;
+    int p2 = 0;
+    int r = 0;
 
     // Se abre el archivo
     ifstream datos(archivoParaAprender);
@@ -28,22 +32,20 @@ TInfo aprender(string archivoParaAprender) {
         // Se lee linea a linea, cada linea se separa en bloques y cada bloque en palabras
         // cada una se guarda en el hash de palabras y cada combinacion de par de palabras
         // en el hash de relaciones
-        while (datos.good() && l< 10) {
+        while (datos.good() && l < 100) {
             getline(datos, buffer);
             if (buffer != "") {
                 linea = Tokenizer::tokenizeDato(buffer);
                 for (int z = 0; z < linea.bloques.size(); z++) {
                     for (int i = 0; i < linea.bloques[z].size(); i++) {
-                        if (linea.bloques[z].at(i) != "") {
-                            info.palabras.agregar(linea.bloques[z].at(i));
-                            for (int j = i + 1; j < linea.bloques[z].size(); j++) {
-                                info.relaciones.agregar(linea.bloques[z].at(i), linea.bloques[z].at(j), linea.valor);
-                            }
+                        info.palabras.agregar(linea.bloques[z].at(i));
+                        for (int j = i + 1; j < linea.bloques[z].size(); j++) {
+                            info.relaciones.agregar(linea.bloques[z].at(i), linea.bloques[z].at(j), linea.valor);
                         }
                     }
                 }
             }
-            l = l+1;
+            l = l + 1;
         }
         datos.close();
     }
@@ -56,7 +58,7 @@ void aprender2(string archivoParaAprender, TInfo *info) {
     string buffer;
     TLineaDato linea;
     string line;
-    int l= 0;
+    int l = 0;
 
     // Se abre el archivo
     ifstream datos(archivoParaAprender);
@@ -65,7 +67,7 @@ void aprender2(string archivoParaAprender, TInfo *info) {
         // Se lee linea a linea, cada linea se separa en palabras cada una se guarda en el
         // hash de palabras y cada combinacion de par de palabras en el hash de relaciones
         //for each line
-        while (datos.good() && l< 10) {
+        while (datos.good() && l < 10) {
             getline(datos, buffer);
             if (buffer != "") {
                 // Se separa en bloques y las bloques en palabras.
@@ -75,12 +77,14 @@ void aprender2(string archivoParaAprender, TInfo *info) {
                 for (int z = 0; z < linea.bloques.size(); z++) {
                     TBloque bloque;
                     for (int i = 0; i < linea.bloques[z].size(); i++) {
+                        string palabra1 = linea.bloques[z].at(i);
                         if (linea.bloques[z].at(i) != "") {
                             for (int j = i + 1; j < linea.bloques[z].size(); j++) {
+                                string palabra2 = linea.bloques[z].at(j);
                                 bloque.relaciones.push_back(
-                                        Perceptron::procesarDatosRelacion(linea.bloques[z].at(i),
-                                                                          linea.bloques[z].at(j),
-                                                                          *info));
+                                        Perceptron::procesarDatosRelacion(info->relaciones.getDatos(palabra1, palabra2),
+                                                              info->palabras.getCantidad(palabra1),
+                                                              info->palabras.getCantidad(palabra2)));
                             }
                         }
                     }
@@ -89,11 +93,11 @@ void aprender2(string archivoParaAprender, TInfo *info) {
                 }
                 Perceptron::ajustarW(review, info, linea.valor);
             }
-            if(l==1999) {
-                int a =2;
+            if (l == 1999) {
+                int a = 2;
             }
-            l = l+1;
-            cout<<l<<endl;
+            l = l + 1;
+            cout << l << endl;
         }
         datos.close();
     }
@@ -106,7 +110,7 @@ void resolver(TInfo *info, string datosATestear) {
     TLineaDato lineaDato;
     string line;
     double resultado;
-    int l= 0;
+    int l = 0;
 
     // Se abre el archivo
     ifstream datos(datosATestear);
@@ -117,7 +121,7 @@ void resolver(TInfo *info, string datosATestear) {
         // Se lee linea a linea, cada linea se separa en palabras cada una se guarda en el
         // hash de palabras y cada combinacion de par de palabras en el hash de relaciones
         //for each line
-        while (datos.good() && l< 2000) {
+        while (datos.good() && l < 2000) {
             getline(datos, buffer);
 
             if (buffer != "") {
@@ -130,10 +134,13 @@ void resolver(TInfo *info, string datosATestear) {
                     TBloque bloque;
                     for (int i = 0; i < lineaDato.bloques[z].size(); i++) {
                         if (lineaDato.bloques[z].at(i) != "") {
+                            string palabra1 = lineaDato.bloques[z].at(i);
                             for (int j = i + 1; j < lineaDato.bloques[z].size(); j++) {
-                                bloque.relaciones.push_back(Perceptron::procesarDatosRelacion(lineaDato.bloques[z].at(i),
-                                                                                              lineaDato.bloques[z].at(j),
-                                                                                              *info));
+                                string palabra2 = lineaDato.bloques[z].at(j);
+                                bloque.relaciones.push_back(
+                                        Perceptron::procesarDatosRelacion(info->relaciones.getDatos(palabra1, palabra2),
+                                                                          info->palabras.getCantidad(palabra1),
+                                                                          info->palabras.getCantidad(palabra2)));
                             }
                         }
                     }
@@ -149,13 +156,12 @@ void resolver(TInfo *info, string datosATestear) {
                     savefile << "0" << endl;
                 }
             }
-            l = l+1;
+            l = l + 1;
         }
         datos.close();
         savefile.close();
     }
 }
-
 
 
 // Con la info pasada por parametro analiza los datos a testear.
@@ -187,9 +193,10 @@ void resolver2(TInfo *info, string datosATestear) {
                     TBloque bloque;
                     for (int i = 0; i < lineaDato.bloques[z].size(); i++) {
                         for (int j = i + 1; j < lineaDato.bloques[z].size(); j++) {
-                            bloque.relaciones.push_back(ProbCondicional::procesarDatosRelacion(lineaDato.bloques[z].at(i),
-                                                                                          lineaDato.bloques[z].at(j),
-                                                                                          info));
+                            bloque.relaciones.push_back(
+                                    ProbCondicional::procesarDatosRelacion(lineaDato.bloques[z].at(i),
+                                                                           lineaDato.bloques[z].at(j),
+                                                                           info));
                         }
                     }
                     review.push_back(bloque);
@@ -211,9 +218,9 @@ void resolver2(TInfo *info, string datosATestear) {
 
 int main(int argc, char **argv) {
     TInfo info = aprender(TRAIN_DATA);
-    cout<<"pasoaca1"<<endl;
+    cout << "pasoaca1" << endl;
     aprender2(TRAIN_DATA, &info);
-    cout<<"pasoaca2"<<endl;/*
+    cout << "pasoaca2" << endl;/*
     resolver(info, TEST_DATA);*/
     //resolver2(info, TEST_DATA);
 }

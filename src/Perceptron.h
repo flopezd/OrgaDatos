@@ -11,7 +11,7 @@
 
 class Perceptron {
 public:
-    static TRelacion procesarDatosRelacion(string palabra1,string palabra2,TInfo info);
+    static TRelacion procesarDatosRelacion(TDatosRelacion datosRelacion,double cantPal1,double cantPal2);
     static TBloque procesarDatosBloque(vector<TRelacion> bloque);
     static void ajustarW(vector<TBloque> review, TInfo *info,double valorEsperado);
     static double resolverReview(vector<TBloque> review, TInfo *info);

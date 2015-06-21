@@ -11,12 +11,6 @@ void HashPalabras::agregar(string palabra) {
         hash.at(palabra) += 1;
     else
         hash.insert({palabra, 1});
-    if (palabra == "to") {
-        a = a+1;
-        if (hash.at(palabra) != a) {
-            int s =5;
-        }
-    }
 }
 
 int HashPalabras::getCantidad(string palabra) {

@@ -1,6 +1,16 @@
 #include "Tokenizer.h"
 #include "../strtk/strtk.hpp"
 
+bool pertenece(vector<string> usados,string palabra) {
+    bool seUsa = false;
+    for (int i = 0; i < usados.size(); i++) {
+        if (usados[i] == palabra) {
+            seUsa =true;
+        }
+    }
+    return seUsa;
+}
+
 // Toma una linea de datos y la separa por palabras, guardando tambien su valor.
 TLineaDato Tokenizer::tokenizeDato(string linea) {
     TLineaDato lineaDato = TLineaDato();
@@ -22,8 +32,16 @@ TLineaDato Tokenizer::tokenizeDato(string linea) {
     static const std::string delimiters3 = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
     for(int i = 0; i < bloques.size();i++) {
         vector<string> bloque;
+        vector<string> bloqueAux;
         strtk::parse(bloques[i],delimiters3,bloque);
-        lineaDato.bloques.push_back(bloque);
+        while (!bloque.empty()) {
+            string palabraAux = bloque.back();
+            if (palabraAux != "" && !pertenece(bloqueAux,palabraAux)) {
+                bloqueAux.push_back(palabraAux);
+            }
+            bloque.pop_back();
+        }
+        lineaDato.bloques.push_back(bloqueAux);
     }
     return lineaDato;
 }
@@ -47,8 +65,16 @@ TLineaDato Tokenizer::tokenizeDatoTest(string linea) {
     static const std::string delimiters3 = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
     for(int i = 0; i < bloques.size();i++) {
         vector<string> bloque;
+        vector<string> bloqueAux;
         strtk::parse(bloques[i],delimiters3,bloque);
-        lineaDato.bloques.push_back(bloque);
+        while (!bloque.empty()) {
+            string palabraAux = bloque.back();
+            if (palabraAux != "" && !pertenece(bloqueAux,palabraAux)) {
+                bloqueAux.push_back(palabraAux);
+            }
+            bloque.pop_back();
+        }
+        lineaDato.bloques.push_back(bloqueAux);
     }
     return lineaDato;
 }
