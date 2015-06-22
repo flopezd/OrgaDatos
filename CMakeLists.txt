@@ -28,12 +28,14 @@ set(SOURCE_FILES
     src/TInfo.h
     src/TDatosRelacion.cpp
     src/TDatosRelacion.h
+    src/HashRelacionesTriples.cpp
+    src/HashRelacionesTriples.h
     src/Common.h
     strtk/strtk.hpp
     src/main.cpp
     )
 
-add_executable(OrgaDatos ${SOURCE_FILES} src/ProbCondicional.cpp src/ProbCondicional.h)
+add_executable(OrgaDatos ${SOURCE_FILES} src/ProbCondicional.cpp src/ProbCondicional.h )
 
 # Bibliotecas
 target_link_libraries(OrgaDatos)

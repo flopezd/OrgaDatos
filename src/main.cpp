@@ -49,9 +49,15 @@ TInfo aprender(string archivoParaAprender) {
                 linea = Tokenizer::tokenizeDato(buffer,stopWords);
                 for (int z = 0; z < linea.bloques.size(); z++) {
                     for (int i = 0; i < linea.bloques[z].size(); i++) {
+                        if ("Moonwalker" ==linea.bloques[z].at(i)  ){
+                            int a =5;
+                        }
                         info.palabras.agregar(linea.bloques[z].at(i));
                         for (int j = i + 1; j < linea.bloques[z].size(); j++) {
                             info.relaciones.agregar(linea.bloques[z].at(i), linea.bloques[z].at(j), linea.valor);
+                            for (int r = j + 1; r < linea.bloques[z].size(); r++) {
+                                info.relacionesTriples.agregar(linea.bloques[z].at(i), linea.bloques[z].at(j), linea.bloques[z].at(r), linea.valor);
+                            }
                         }
                     }
                 }
@@ -105,25 +111,23 @@ TInfo aprender2(string archivoParaAprender, TInfo info) {
                         string palabra1 = linea.bloques[z].at(i);
                         for (int j = i + 1; j < linea.bloques[z].size(); j++) {
                             string palabra2 = linea.bloques[z].at(j);
-                            bloque.relaciones.push_back(
-                                    Perceptron::procesarDatosRelacion(info.relaciones.getDatos(palabra1, palabra2),
-                                                                      info.palabras.getCantidad(palabra1),
-                                                                      info.palabras.getCantidad(palabra2)));
+                            TRelacion relacion = Perceptron::procesarDatosRelacion(info.relaciones.getDatos(palabra1, palabra2),
+                                                                         info.palabras.getCantidad(palabra1),
+                                                                         info.palabras.getCantidad(palabra2));
+                            bloque.relaciones.push_back(relacion);
+                            for (int r = j + 1; r < linea.bloques[z].size(); r++) {
+                                string palabra3 = linea.bloques[z].at(r);
+                                TRelacion relacion = Perceptron::procesarDatosRelacionTriple(info.relacionesTriples.getDatos(palabra1, palabra2,palabra3),
+                                                                                       info.palabras.getCantidad(palabra1),
+                                                                                       info.palabras.getCantidad(palabra2),info.palabras.getCantidad(palabra3));
+                                bloque.relaciones.push_back(relacion);
+                            }
                         }
                     }
                     bloque = Perceptron::procesarDatosBloque(bloque.relaciones);
                     review.push_back(bloque);
                 }
                 info.wPerceptron = Perceptron::ajustarW(review, info.wPerceptron, linea.valor);
-            }
-            if (l == 500) {
-                int a = 2;
-            }
-            if (l == 1000) {
-                int a = 2;
-            }
-            if (l == 1500) {
-                int a = 2;
             }
             l = l + 1;
             cout << l << endl;
@@ -185,6 +189,13 @@ void resolver(TInfo info, string datosATestear) {
                                         Perceptron::procesarDatosRelacion(info.relaciones.getDatos(palabra1, palabra2),
                                                                           info.palabras.getCantidad(palabra1),
                                                                           info.palabras.getCantidad(palabra2)));
+                                for (int r = j + 1; r < lineaDato.bloques[z].size(); r++) {
+                                    string palabra3 = lineaDato.bloques[z].at(r);
+                                    TRelacion relacion = Perceptron::procesarDatosRelacionTriple(info.relacionesTriples.getDatos(palabra1, palabra2,palabra3),
+                                                                                                 info.palabras.getCantidad(palabra1),
+                                                                                                 info.palabras.getCantidad(palabra2),info.palabras.getCantidad(palabra3));
+                                    bloque.relaciones.push_back(relacion);
+                                }
                             }
                         }
                     }

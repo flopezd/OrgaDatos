@@ -19,13 +19,7 @@ private:
         string pal2;
 
         bool operator==(const ParPalabras& b) const
-        {/*
-            int comp1 = pal1.compare(b.pal1);
-            comp1 = comp1 + pal2.compare(b.pal2);
-            int comp2 = pal1.compare(b.pal2);
-            comp2 = comp2 + pal2.compare(b.pal1);
-
-            return ( comp1 == 0 || comp2 == 0  );*/
+        {
             bool comp1 = pal1 == b.pal1;
             comp1 = comp1 && pal2 == b.pal2;
             bool comp2 = pal1 == b.pal2;

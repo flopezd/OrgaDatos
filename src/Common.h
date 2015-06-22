@@ -11,9 +11,12 @@
 #include "HashRelaciones.h"
 #include "HashPalabras.h"
 
-using namespace std;
-static const int cantBloquesMax = 15;
-static const int cantRelacionesMax = 1000;
+using namespace std;/*
+static const int cantBloquesMax = 12;
+static const int cantRelacionesMax = 106;
+static const int tamVectorPerceptron = cantBloquesMax*(cantRelacionesMax);*/
+static const int cantBloquesMax = 12;
+static const int cantRelacionesMax = 130;
 static const int tamVectorPerceptron = cantBloquesMax*(cantRelacionesMax);
 
 

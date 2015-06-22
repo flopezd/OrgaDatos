@@ -16,6 +16,20 @@ TRelacion Perceptron::procesarDatosRelacion(TDatosRelacion datosRelacion,double 
     return relacion;
 }
 
+TRelacion Perceptron::procesarDatosRelacionTriple(TDatosRelacion datosRelacion,double cantPal1,double cantPal2,double cantPal3) {
+    TRelacion relacion;
+    relacion.probabilidad = 0;
+    relacion.valorRelacion = 0;
+    if (datosRelacion.cantRelaciones > 0) {
+        relacion.probabilidad = (double)(3*datosRelacion.cantRelaciones)/(cantPal1+cantPal2+cantPal3);
+        relacion.valorRelacion = datosRelacion.valorRelacion;
+    }
+    if (relacion.probabilidad>1 || relacion.valorRelacion>1){
+        int a =2;
+    }
+    return relacion;
+}
+
 int partition(vector<TRelacion> *bloque, int low, int high) {
     int pivotIndex = (low + high) / 2;
     double pivotValue = bloque->at(pivotIndex).probabilidad;
@@ -51,27 +65,6 @@ void ordenarBloque(vector<TRelacion> *bloque, int low, int high) {
         ordenarBloque(bloque, p +1, high);
     }
 }
-/*
-TBloque Perceptron::procesarDatosBloque(vector<TRelacion> bloque) {
-    TBloque bloqueAux;
-    double probTotal = 0;
-    ordenarBloque(&bloque,0,bloque.size()-1);
-    while(bloque.size()>cantRelacionesMax/2) {
-        bloque.pop_back();
-    }
-    while(bloque.size()<cantRelacionesMax/2) {
-        TRelacion relacion;
-        relacion.probabilidad = 0;
-        relacion.valorRelacion = 0;
-        bloque.push_back(relacion);
-    }
-    for (int i = 0; i < bloque.size(); i++) {
-        probTotal = probTotal + bloque[i].probabilidad;
-    }
-    bloqueAux.probabilidad = probTotal / bloque.size();
-    bloqueAux.relaciones = bloque;
-    return bloqueAux;
-}*/
 
 TBloque Perceptron::procesarDatosBloque(vector<TRelacion> bloque) {
     TBloque bloqueAux;
@@ -141,21 +134,18 @@ void ordenarReview(vector<TBloque> *review, int low, int high) {
     }
 }
 /*
-double *generarVector(vector<TBloque> review) {
-    double *vector = new double[tamVectorPerceptron];
+vector<double> generarVector(vector<TBloque> review) {
+    vector<double> vector;
     ordenarReview(&review,0,review.size()-1);
-    while(review.size()>cantBloquesMax) {
-        review.pop_back();
-    }
     while(review.size()<cantBloquesMax) {
         TBloque bloque = TBloque();
         review.push_back(bloque);
     }
     for (int i = 0; i < cantBloquesMax; i++) {
-        vector[i*(cantRelacionesMax+1)] = review[i].probabilidad;
-        for (int j = 1; j < cantRelacionesMax; j=j+2) {
-            vector[j+i*(cantRelacionesMax+1)] = review[i].relaciones[(j-1)/2].probabilidad;
-            vector[j+1+i*(cantRelacionesMax+1)] = review[i].relaciones[(j-1)/2].valorRelacion;
+        vector.push_back(review[i].probabilidad);
+        for (int j = 0; j < cantRelacionesMax; j++) {
+            vector.push_back(review[i].relaciones[j].valorRelacion);
+            vector.push_back(review[i].relaciones[j].probabilidad);
         }
     }
 
