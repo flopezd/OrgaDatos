@@ -5,11 +5,13 @@
 #include "Tokenizer.h"
 #include "Perceptron.h"
 #include "ProbCondicional.h"
+#include "../strtk/strtk.hpp"
 
 using namespace std;
 
 static const string TRAIN_DATA = "resources/labeledTrainData.tsv";
 static const string TEST_DATA = "resources/testData.tsv";
+static const string STOP_WORDS = "resources/stopWords.txt";
 
 
 // Procesa la informacion del archivo pasado por parametros y la
@@ -18,24 +20,33 @@ TInfo aprender(string archivoParaAprender) {
     TInfo info = TInfo();
     string buffer;
     TLineaDato linea;
-    string line;
     int l = 0;
-
-    int p1 = 0;
-    int p2 = 0;
-    int r = 0;
+    vector<string> stopWords;
 
     // Se abre el archivo
     ifstream datos(archivoParaAprender);
+    ifstream stopW(STOP_WORDS);
+    if (stopW.is_open()) {
+        static const std::string delimiters = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
+        while (stopW.good()) {
+            vector<string> word;
+            getline(stopW, buffer);
+            if (buffer != "") {
+                strtk::parse(buffer,delimiters,word);
+                word.pop_back();
+                stopWords.push_back(word.back());
+            }
+        }
+    }
     if (datos.is_open()) getline(datos, buffer);
     if (datos.is_open()) {
         // Se lee linea a linea, cada linea se separa en bloques y cada bloque en palabras
         // cada una se guarda en el hash de palabras y cada combinacion de par de palabras
         // en el hash de relaciones
-        while (datos.good() && l < 2000) {
+        while (datos.good()) {
             getline(datos, buffer);
             if (buffer != "") {
-                linea = Tokenizer::tokenizeDato(buffer);
+                linea = Tokenizer::tokenizeDato(buffer,stopWords);
                 for (int z = 0; z < linea.bloques.size(); z++) {
                     for (int i = 0; i < linea.bloques[z].size(); i++) {
                         info.palabras.agregar(linea.bloques[z].at(i));
@@ -59,19 +70,33 @@ TInfo aprender2(string archivoParaAprender, TInfo info) {
     TLineaDato linea;
     string line;
     int l = 0;
+    vector<string> stopWords;
 
     // Se abre el archivo
     ifstream datos(archivoParaAprender);
+    ifstream stopW(STOP_WORDS);
+    if (stopW.is_open()) {
+        static const std::string delimiters = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
+        while (stopW.good()) {
+            vector<string> word;
+            getline(stopW, buffer);
+            if (buffer != "") {
+                strtk::parse(buffer,delimiters,word);
+                word.pop_back();
+                stopWords.push_back(word.back());
+            }
+        }
+    }
     if (datos.is_open()) getline(datos, buffer);
     if (datos.is_open()) {
         // Se lee linea a linea, cada linea se separa en palabras cada una se guarda en el
         // hash de palabras y cada combinacion de par de palabras en el hash de relaciones
         //for each line
-        while (datos.good() && l < 2000) {
+        while (datos.good()) {
             getline(datos, buffer);
             if (buffer != "") {
                 // Se separa en bloques y las bloques en palabras.
-                linea = Tokenizer::tokenizeDato(buffer);
+                linea = Tokenizer::tokenizeDato(buffer,stopWords);
                 // Se agrega cada palabra como nodo y cada relacion como arista
                 vector<TBloque> review = vector<TBloque>();
                 for (int z = 0; z < linea.bloques.size(); z++) {
@@ -116,9 +141,23 @@ void resolver(TInfo info, string datosATestear) {
     string line;
     double resultado;
     int l = 0;
+    vector<string> stopWords;
 
     // Se abre el archivo
     ifstream datos(datosATestear);
+    ifstream stopW(STOP_WORDS);
+    if (stopW.is_open()) {
+        static const std::string delimiters = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
+        while (stopW.good()) {
+            vector<string> word;
+            getline(stopW, buffer);
+            if (buffer != "") {
+                strtk::parse(buffer,delimiters,word);
+                word.pop_back();
+                stopWords.push_back(word.back());
+            }
+        }
+    }
     ofstream savefile("resources/submission.csv");
     savefile << "\"id\",\"sentiment\"" << endl;
     if (datos.is_open()) getline(datos, buffer);
@@ -126,12 +165,12 @@ void resolver(TInfo info, string datosATestear) {
         // Se lee linea a linea, cada linea se separa en palabras cada una se guarda en el
         // hash de palabras y cada combinacion de par de palabras en el hash de relaciones
         //for each line
-        while (datos.good() && l < 2000) {
+        while (datos.good()) {
             getline(datos, buffer);
 
             if (buffer != "") {
                 // Se separa en bloques y las bloques en palabras.
-                lineaDato = Tokenizer::tokenizeDatoTest(buffer);
+                lineaDato = Tokenizer::tokenizeDatoTest(buffer,stopWords);
                 resultado = 0;
                 vector<TBloque> review = vector<TBloque>();
                 // Se agrega cada palabra como nodo y cada relacion como arista
@@ -175,9 +214,23 @@ void resolver2(TInfo *info, string datosATestear) {
     TLineaDato lineaDato;
     string line;
     double resultado;
+    vector<string> stopWords;
 
     // Se abre el archivo
     ifstream datos(datosATestear);
+    ifstream stopW(STOP_WORDS);
+    if (stopW.is_open()) {
+        static const std::string delimiters = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
+        while (stopW.good()) {
+            vector<string> word;
+            getline(stopW, buffer);
+            if (buffer != "") {
+                strtk::parse(buffer,delimiters,word);
+                word.pop_back();
+                stopWords.push_back(word.back());
+            }
+        }
+    }
     ofstream savefile("resources/submission.csv");
     savefile << "\"id\",\"sentiment\"" << endl;
     if (datos.is_open()) getline(datos, buffer);
@@ -190,7 +243,7 @@ void resolver2(TInfo *info, string datosATestear) {
 
             if (buffer != "") {
                 // Se separa en bloques y las bloques en palabras.
-                lineaDato = Tokenizer::tokenizeDatoTest(buffer);
+                lineaDato = Tokenizer::tokenizeDatoTest(buffer,stopWords);
                 resultado = 0;
                 vector<TBloque> review = vector<TBloque>();
                 // Se agrega cada palabra como nodo y cada relacion como arista

@@ -12,8 +12,8 @@
 #include "HashPalabras.h"
 
 using namespace std;
-static const int cantBloquesMax = 10;
-static const int cantRelacionesMax = 100;
+static const int cantBloquesMax = 15;
+static const int cantRelacionesMax = 1000;
 static const int tamVectorPerceptron = cantBloquesMax*(cantRelacionesMax);
 
 

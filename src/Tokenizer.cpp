@@ -12,7 +12,7 @@ bool pertenece(vector<string> usados,string palabra) {
 }
 
 // Toma una linea de datos y la separa por palabras, guardando tambien su valor.
-TLineaDato Tokenizer::tokenizeDato(string linea) {
+TLineaDato Tokenizer::tokenizeDato(string linea, vector<string> stopWords) {
     TLineaDato lineaDato = TLineaDato();
     vector<string> IDValorReview;
     vector<string> bloques;
@@ -36,7 +36,7 @@ TLineaDato Tokenizer::tokenizeDato(string linea) {
         strtk::parse(bloques[i],delimiters3,bloque);
         while (!bloque.empty()) {
             string palabraAux = bloque.back();
-            if (palabraAux != "" && !pertenece(bloqueAux,palabraAux)) {
+            if (palabraAux != "" && !pertenece(bloqueAux,palabraAux) && !pertenece(stopWords,palabraAux)) {
                 bloqueAux.push_back(palabraAux);
             }
             bloque.pop_back();
@@ -47,7 +47,7 @@ TLineaDato Tokenizer::tokenizeDato(string linea) {
 }
 
 // Toma una linea de datos y la separa por palabras, guardando tambien su valor.
-TLineaDato Tokenizer::tokenizeDatoTest(string linea) {
+TLineaDato Tokenizer::tokenizeDatoTest(string linea,vector<string> stopWords) {
     TLineaDato lineaDato = TLineaDato();
     vector<string> IDValorReview;
     vector<string> bloques;
@@ -69,7 +69,7 @@ TLineaDato Tokenizer::tokenizeDatoTest(string linea) {
         strtk::parse(bloques[i],delimiters3,bloque);
         while (!bloque.empty()) {
             string palabraAux = bloque.back();
-            if (palabraAux != "" && !pertenece(bloqueAux,palabraAux)) {
+            if (palabraAux != "" && !pertenece(bloqueAux,palabraAux) && !pertenece(stopWords,palabraAux)) {
                 bloqueAux.push_back(palabraAux);
             }
             bloque.pop_back();
