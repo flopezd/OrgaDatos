@@ -1,7 +1,3 @@
-//
-// Created by fran on 09/06/15.
-//
-
 #ifndef ORGADATOS_HASHPALABRAS_H
 #define ORGADATOS_HASHPALABRAS_H
 

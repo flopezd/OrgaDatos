@@ -1,10 +1,3 @@
-/*
- * Parser.cpp
- *
- *  Created on: 23/06/2015
- *      Author: emanuel
- */
-
 #include <string.h>
 #include "Parser.h"
 using namespace std;

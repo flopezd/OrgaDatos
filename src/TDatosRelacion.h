@@ -1,7 +1,3 @@
-//
-// Created by fran on 10/06/15.
-//
-
 #ifndef ORGADATOS_TDATOSRELACION_H
 #define ORGADATOS_TDATOSRELACION_H
 

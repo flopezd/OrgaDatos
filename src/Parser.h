@@ -1,10 +1,3 @@
-/*
- * Parser.h
- *
- *  Created on: 23/06/2015
- *      Author: emanuel
- */
-
 #ifndef ORGADATOS_PARSER_H
 #define ORGADATOS_PARSER_H
 #include <vector>

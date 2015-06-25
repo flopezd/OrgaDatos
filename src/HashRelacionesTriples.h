@@ -1,7 +1,3 @@
-//
-// Created by fran on 21/06/15.
-//
-
 #ifndef ORGADATOS_HASHRELACIONESTRIPLES_H
 #define ORGADATOS_HASHRELACIONESTRIPLES_H
 

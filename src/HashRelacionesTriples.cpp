@@ -1,7 +1,3 @@
-//
-// Created by fran on 21/06/15.
-//
-
 #include "HashRelacionesTriples.h"
 
 void HashRelacionesTriples::agregar(string palabra1, string palabra2, string palabra3, int valor) {
