@@ -11,13 +11,10 @@
 #include "HashRelaciones.h"
 #include "HashPalabras.h"
 
-using namespace std;/*
+using namespace std;
 static const int cantBloquesMax = 12;
 static const int cantRelacionesMax = 106;
-static const int tamVectorPerceptron = cantBloquesMax*(cantRelacionesMax);*/
-static const int cantBloquesMax = 12;
-static const int cantRelacionesMax = 130;
-static const int tamVectorPerceptron = cantBloquesMax*(cantRelacionesMax);
+static const int tamVectorPerceptron = cantBloquesMax*cantRelacionesMax;
 
 
 struct TLineaDato {
@@ -27,7 +24,7 @@ struct TLineaDato {
 };
 
 struct TRelacion {
-    double probabilidad,valorRelacion,probPositivo;
+    double probabilidad,valorRelacion;
 };
 
 struct TBloque {

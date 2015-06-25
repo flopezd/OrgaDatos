@@ -1,7 +1,3 @@
-//
-// Created by fran on 09/06/15.
-//
-
 #include "HashRelaciones.h"
 
 void HashRelaciones::agregar(string palabra1, string palabra2, int valor) {
@@ -36,7 +32,6 @@ TDatosRelacion HashRelaciones::getDatos(string palabra1, string palabra2) {
     if (hash.count(par) > 0) {
         datosRelacion.cantRelaciones = hash.at(par).cantRel();
         datosRelacion.valorRelacion = (double) (hash.at(par).difPosNeg()) / (double) (hash.at(par).cantRel());
-        datosRelacion.cantPos = hash.at(par).cantPos();
 
     }
     return datosRelacion;

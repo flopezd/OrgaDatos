@@ -1,7 +1,3 @@
-//
-// Created by fran on 09/06/15.
-//
-
 #include "HashPalabras.h"
 using namespace std;
 

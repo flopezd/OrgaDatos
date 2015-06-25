@@ -10,9 +10,6 @@ TRelacion Perceptron::procesarDatosRelacion(TDatosRelacion datosRelacion,double 
         relacion.probabilidad = (double)(2*datosRelacion.cantRelaciones)/(cantPal1+cantPal2);
         relacion.valorRelacion = datosRelacion.valorRelacion;
     }
-    if (relacion.probabilidad>1 || relacion.valorRelacion>1){
-        int a =2;
-    }
     return relacion;
 }
 
@@ -24,9 +21,6 @@ TRelacion Perceptron::procesarDatosRelacionTriple(TDatosRelacion datosRelacion,d
         relacion.probabilidad = (double)(3*datosRelacion.cantRelaciones)/(cantPal1+cantPal2+cantPal3);
         relacion.valorRelacion = datosRelacion.valorRelacion;
     }
-    if (relacion.probabilidad>1 || relacion.valorRelacion>1){
-        int a =2;
-    }
     return relacion;
 }
 
@@ -35,13 +29,11 @@ int partition(vector<TRelacion> *bloque, int low, int high) {
     double pivotValue = bloque->at(pivotIndex).probabilidad;
     TRelacion tmp;
 
-    // put the chosen pivot at A[hi]
     tmp = bloque->at(pivotIndex);
     bloque->at(pivotIndex) = bloque->at(high);
     bloque->at(high) = tmp;
 
     int storeIndex = low;
-    // Compare remaining array elements against pivotValue = A[hi]
     for (int i = low; i < high; i++) {
         if(bloque->at(i).probabilidad>pivotValue) {
             tmp = bloque->at(storeIndex);
@@ -50,7 +42,6 @@ int partition(vector<TRelacion> *bloque, int low, int high) {
             storeIndex = storeIndex + 1;
         }
     }
-    // Move pivot to its final place
     tmp = bloque->at(storeIndex);
     bloque->at(storeIndex) = bloque->at(high);
     bloque->at(high) = tmp;
@@ -80,9 +71,6 @@ TBloque Perceptron::procesarDatosBloque(vector<TRelacion> bloque) {
         bloque.push_back(relacion);
     }
     for (int i = 0; i < bloque.size(); i++) {
-        if (bloque[i].probabilidad>1 || bloque[i].valorRelacion>1){
-            int a =2;
-        }
         probTotal = probTotal + bloque[i].probabilidad;
     }
     bloqueAux.probabilidad = probTotal / bloque.size();
@@ -103,13 +91,11 @@ int partition2(vector<TBloque> *bloque, int low, int high) {
     double pivotValue = bloque->at(pivotIndex).probabilidad;
     TBloque tmp;
 
-    // put the chosen pivot at A[hi]
     tmp = bloque->at(pivotIndex);
     bloque->at(pivotIndex) = bloque->at(high);
     bloque->at(high) = tmp;
 
     int storeIndex = low;
-    // Compare remaining array elements against pivotValue = A[hi]
     for (int i = low; i < high; i++) {
         if(bloque->at(i).probabilidad>pivotValue) {
             tmp = bloque->at(storeIndex);
@@ -118,7 +104,6 @@ int partition2(vector<TBloque> *bloque, int low, int high) {
             storeIndex = storeIndex + 1;
         }
     }
-    // Move pivot to its final place
     tmp = bloque->at(storeIndex);
     bloque->at(storeIndex) = bloque->at(high);
     bloque->at(high) = tmp;
@@ -133,24 +118,6 @@ void ordenarReview(vector<TBloque> *review, int low, int high) {
         ordenarReview(review, p +1, high);
     }
 }
-/*
-vector<double> generarVector(vector<TBloque> review) {
-    vector<double> vector;
-    ordenarReview(&review,0,review.size()-1);
-    while(review.size()<cantBloquesMax) {
-        TBloque bloque = TBloque();
-        review.push_back(bloque);
-    }
-    for (int i = 0; i < cantBloquesMax; i++) {
-        vector.push_back(review[i].probabilidad);
-        for (int j = 0; j < cantRelacionesMax; j++) {
-            vector.push_back(review[i].relaciones[j].valorRelacion);
-            vector.push_back(review[i].relaciones[j].probabilidad);
-        }
-    }
-
-    return vector;
-}*/
 
 vector<double> generarVector(vector<TBloque> review) {
     vector<double> vector;
@@ -170,7 +137,7 @@ vector<double> generarVector(vector<TBloque> review) {
 
 vector<double> Perceptron::ajustarW(vector<TBloque> review, vector<double> wPerceptron,double valorEsperado) {
     vector<double> entrada = generarVector(review);
-    double learningRate = 0.05;
+    double learningRate = 0.0025;
 
     double resultadoEsperado = valorEsperado;
     if (valorEsperado == 0) resultadoEsperado=-1;

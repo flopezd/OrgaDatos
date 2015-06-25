@@ -40,10 +40,6 @@ private:
         long int difPosNeg() {
             return (positiva - negativa);
         }
-
-        long int cantPos() {
-            return (positiva);
-        }
     };
 
     struct KeyHasher {

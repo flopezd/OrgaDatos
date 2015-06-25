@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <math.h>
 #include "Common.h"
 #include "Tokenizer.h"
 #include "Perceptron.h"
-#include "ProbCondicional.h"
 #include "../strtk/strtk.hpp"
 
 using namespace std;
@@ -49,15 +49,12 @@ TInfo aprender(string archivoParaAprender) {
                 linea = Tokenizer::tokenizeDato(buffer,stopWords);
                 for (int z = 0; z < linea.bloques.size(); z++) {
                     for (int i = 0; i < linea.bloques[z].size(); i++) {
-                        if ("Moonwalker" ==linea.bloques[z].at(i)  ){
-                            int a =5;
-                        }
                         info.palabras.agregar(linea.bloques[z].at(i));
                         for (int j = i + 1; j < linea.bloques[z].size(); j++) {
                             info.relaciones.agregar(linea.bloques[z].at(i), linea.bloques[z].at(j), linea.valor);
-                            for (int r = j + 1; r < linea.bloques[z].size(); r++) {
+                            /*for (int r = j + 1; r < linea.bloques[z].size(); r++) {
                                 info.relacionesTriples.agregar(linea.bloques[z].at(i), linea.bloques[z].at(j), linea.bloques[z].at(r), linea.valor);
-                            }
+                            }*/
                         }
                     }
                 }
@@ -115,13 +112,13 @@ TInfo aprender2(string archivoParaAprender, TInfo info) {
                                                                          info.palabras.getCantidad(palabra1),
                                                                          info.palabras.getCantidad(palabra2));
                             bloque.relaciones.push_back(relacion);
-                            for (int r = j + 1; r < linea.bloques[z].size(); r++) {
+                            /*for (int r = j + 1; r < linea.bloques[z].size(); r++) {
                                 string palabra3 = linea.bloques[z].at(r);
                                 TRelacion relacion = Perceptron::procesarDatosRelacionTriple(info.relacionesTriples.getDatos(palabra1, palabra2,palabra3),
                                                                                        info.palabras.getCantidad(palabra1),
                                                                                        info.palabras.getCantidad(palabra2),info.palabras.getCantidad(palabra3));
                                 bloque.relaciones.push_back(relacion);
-                            }
+                            }*/
                         }
                     }
                     bloque = Perceptron::procesarDatosBloque(bloque.relaciones);
@@ -146,6 +143,7 @@ void resolver(TInfo info, string datosATestear) {
     double resultado;
     int l = 0;
     vector<string> stopWords;
+    long double sigmacuadrado = 0;
 
     // Se abre el archivo
     ifstream datos(datosATestear);
@@ -189,13 +187,13 @@ void resolver(TInfo info, string datosATestear) {
                                         Perceptron::procesarDatosRelacion(info.relaciones.getDatos(palabra1, palabra2),
                                                                           info.palabras.getCantidad(palabra1),
                                                                           info.palabras.getCantidad(palabra2)));
-                                for (int r = j + 1; r < lineaDato.bloques[z].size(); r++) {
+                                /*for (int r = j + 1; r < lineaDato.bloques[z].size(); r++) {
                                     string palabra3 = lineaDato.bloques[z].at(r);
                                     TRelacion relacion = Perceptron::procesarDatosRelacionTriple(info.relacionesTriples.getDatos(palabra1, palabra2,palabra3),
                                                                                                  info.palabras.getCantidad(palabra1),
                                                                                                  info.palabras.getCantidad(palabra2),info.palabras.getCantidad(palabra3));
                                     bloque.relaciones.push_back(relacion);
-                                }
+                                }*/
                             }
                         }
                     }
@@ -205,81 +203,26 @@ void resolver(TInfo info, string datosATestear) {
                 resultado = Perceptron::resolverReview(review, info.wPerceptron);
                 savefile << lineaDato.id << ",";
                 // Si el resultado final es positivo la review se considera positiva, en caso contrario se toma como negativa
+                sigmacuadrado = sigmacuadrado +resultado*resultado;
+                cout << resultado << endl;
                 if (resultado > 0) {
-                    savefile << "1" << endl;
+                    //savefile << "1" << endl;
                 } else {
-                    savefile << "0" << endl;
+                    //savefile << "0" << endl;
                 }
+                double prob = 1/(1+exp(-resultado*2.73*pow (10,-7)));
+                prob = prob*10;
+                prob = round(prob);
+                cout << prob << endl;
+                prob = prob/10;
+                savefile << prob << endl;
             }
             l = l + 1;
         }
-        datos.close();
-        savefile.close();
-    }
-}
+        sigmacuadrado = sigmacuadrado /25000;
+        double alfa = log(pow((0.05/0.95),-1/(2*sqrt(sigmacuadrado))));
 
 
-// Con la info pasada por parametro analiza los datos a testear.
-void resolver2(TInfo *info, string datosATestear) {
-    string buffer;
-    TLineaDato lineaDato;
-    string line;
-    double resultado;
-    vector<string> stopWords;
-
-    // Se abre el archivo
-    ifstream datos(datosATestear);
-    ifstream stopW(STOP_WORDS);
-    if (stopW.is_open()) {
-        static const std::string delimiters = "[]<>\t\"\r\n ;:!@#$^&*/-=+`~,";
-        while (stopW.good()) {
-            vector<string> word;
-            getline(stopW, buffer);
-            if (buffer != "") {
-                strtk::parse(buffer,delimiters,word);
-                word.pop_back();
-                stopWords.push_back(word.back());
-            }
-        }
-    }
-    ofstream savefile("resources/submission.csv");
-    savefile << "\"id\",\"sentiment\"" << endl;
-    if (datos.is_open()) getline(datos, buffer);
-    if (datos.is_open()) {
-        // Se lee linea a linea, cada linea se separa en palabras cada una se guarda en el
-        // hash de palabras y cada combinacion de par de palabras en el hash de relaciones
-        //for each line
-        while (datos.good()) {
-            getline(datos, buffer);
-
-            if (buffer != "") {
-                // Se separa en bloques y las bloques en palabras.
-                lineaDato = Tokenizer::tokenizeDatoTest(buffer,stopWords);
-                resultado = 0;
-                vector<TBloque> review = vector<TBloque>();
-                // Se agrega cada palabra como nodo y cada relacion como arista
-                for (int z = 0; z < lineaDato.bloques.size(); z++) {
-                    TBloque bloque;
-                    for (int i = 0; i < lineaDato.bloques[z].size(); i++) {
-                        for (int j = i + 1; j < lineaDato.bloques[z].size(); j++) {
-                            bloque.relaciones.push_back(
-                                    ProbCondicional::procesarDatosRelacion(lineaDato.bloques[z].at(i),
-                                                                           lineaDato.bloques[z].at(j),
-                                                                           info));
-                        }
-                    }
-                    review.push_back(bloque);
-                }
-                resultado = ProbCondicional::resolverReview(review, info);
-                savefile << lineaDato.id << ",";
-                // Si el resultado final es positivo la review se considera positiva, en caso contrario se toma como negativa
-                if (resultado > 0.5) {
-                    savefile << "1" << endl;
-                } else {
-                    savefile << "0" << endl;
-                }
-            }
-        }
         datos.close();
         savefile.close();
     }
@@ -291,5 +234,4 @@ int main(int argc, char **argv) {
     info = aprender2(TRAIN_DATA, info);
     cout << "pasoaca2" << endl;
     resolver(info, TEST_DATA);
-    //resolver2(info, TEST_DATA);
 }

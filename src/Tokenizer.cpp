@@ -15,10 +15,12 @@ bool pertenece(vector<string> usados,string palabra) {
 TLineaDato Tokenizer::tokenizeDato(string linea, vector<string> stopWords) {
     TLineaDato lineaDato = TLineaDato();
     vector<string> IDValorReview;
+    vector<string> IDValorReviewA;
     vector<string> bloques;
 
     // Parsea el id, valor y review
     static const std::string delimiters1 = "\t";
+    static const char delimiters1A []= "\t";
     strtk::parse(linea,delimiters1,IDValorReview);
     lineaDato.id = IDValorReview[0];
     if(IDValorReview[1]=="1") lineaDato.valor = 1;
@@ -43,6 +45,7 @@ TLineaDato Tokenizer::tokenizeDato(string linea, vector<string> stopWords) {
         }
         lineaDato.bloques.push_back(bloqueAux);
     }
+
     return lineaDato;
 }
 
